@@ -14,22 +14,17 @@ from rich import print
 from rich.console import Console
 from rich.table import Table
 
-# Charger les variables d'environnement depuis le fichier .env
 load_dotenv()
 
-# Créer l'application FastAPI
 app = FastAPI()
 
-# Initialiser la console Rich
 console = Console()
 
-# Récupérer les informations d'API Azure OpenAI depuis les variables d'environnement
 azure_openai_api_key = os.getenv("AZURE_OPENAI_API_KEY")
 azure_openai_endpoint = os.getenv("AZURE_OPENAI_ENDPOINT")
 azure_openai_deployment_name = os.getenv("AZURE_OPENAI_DEPLOYMENT_NAME")
 azure_openai_api_version = os.getenv("AZURE_OPENAI_API_VERSION")
 
-# Configuration du modèle Azure OpenAI (AzureChatOpenAI)
 llm = AzureChatOpenAI(
     azure_endpoint=azure_openai_endpoint,
     azure_deployment=azure_openai_deployment_name,
@@ -47,16 +42,14 @@ embedding_model = AzureOpenAIEmbeddings(
 
 print("Modèle d'embedding configuré")
 
-# Charger les données des livres (par exemple, un CSV avec 20 000 lignes)
 df_books = pd.read_csv('Files/gutenberg_ebooks.csv')
 print("Données des livres chargées")
 
-# Nettoyage des données de la colonne 'Summary'
 df_books['Summary'] = df_books['Summary'].fillna('').astype(str)
 print("Nettoyage des données effectué")
 
 # Limiter le nombre de livres pour tester
-df_books = df_books.head(100)  # Limitation temporaire à 100 livres pour tests rapides
+df_books = df_books.head(100)
 
 # Charger les résumés de livres
 book_summaries = df_books['Summary'].tolist()
@@ -82,7 +75,7 @@ index = create_vector_index(book_summaries, embedding_model)
 def get_book_info(book_title):
     book_info = df_books[df_books['Title'].str.contains(book_title, case=False, na=False)]
     if not book_info.empty:
-        return book_info.iloc[0].to_dict()  # Retourner les attributs du premier livre correspondant
+        return book_info.iloc[0].to_dict()
     else:
         return None
 
@@ -93,7 +86,7 @@ def ask_llm(question):
         input_variables=["question"]
     )
     formatted_prompt = prompt_template.format(question=question)
-    response = llm.invoke(formatted_prompt)  # Utiliser la méthode invoke pour appeler l'API
+    response = llm.invoke(formatted_prompt)
     return response
 
 # Fonction pour rechercher les documents pertinents et poser une question à Azure OpenAI

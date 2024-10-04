@@ -5,27 +5,23 @@ import spacy
 from dotenv import load_dotenv
 from langchain_openai import AzureChatOpenAI
 from langchain.prompts import PromptTemplate
-from langchain_openai import AzureOpenAIEmbeddings  # Mise à jour ici
+from langchain_openai import AzureOpenAIEmbeddings
 from langchain_community.vectorstores import DocArrayInMemorySearch
 from langchain.indexes import VectorstoreIndexCreator
-from langchain_community.document_loaders import TextLoader  # Mise à jour ici
-from rich import print  # Import pour afficher les résultats formatés
-from rich.console import Console  # Utilisé pour afficher les tables ou sections formatées
+from langchain_community.document_loaders import TextLoader
+from rich import print
+from rich.console import Console
 from rich.table import Table
 
-# Initialiser la console Rich
 console = Console()
 
-# Charger les variables d'environnement depuis le fichier .env
 load_dotenv()
 
-# Récupérer les informations d'API Azure OpenAI depuis les variables d'environnement
 azure_openai_api_key = os.getenv("AZURE_OPENAI_API_KEY")
 azure_openai_endpoint = os.getenv("AZURE_OPENAI_ENDPOINT")
 azure_openai_deployment_name = os.getenv("AZURE_OPENAI_DEPLOYMENT_NAME")
 azure_openai_api_version = os.getenv("AZURE_OPENAI_API_VERSION")
 
-# Configuration du modèle Azure OpenAI (AzureChatOpenAI)
 llm = AzureChatOpenAI(
     azure_endpoint=azure_openai_endpoint,
     azure_deployment=azure_openai_deployment_name,
@@ -77,11 +73,11 @@ def ask_llm(question):
         input_variables=["question"]
     )
     formatted_prompt = prompt_template.format(question=question)
-    response = llm.invoke(formatted_prompt)  # Utiliser la méthode invoke pour appeler l'API
+    response = llm.invoke(formatted_prompt)
     return response
 
 # Chargement du contenu texte pour l'indexation
-loader = TextLoader('loader.txt')  # Remplace par le chemin réel du fichier
+loader = TextLoader('loader.txt')
 
 # Création de l'index avec AzureOpenAIEmbeddings
 index = VectorstoreIndexCreator(

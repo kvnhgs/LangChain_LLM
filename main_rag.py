@@ -12,19 +12,15 @@ from rich import print
 from rich.console import Console
 from rich.table import Table
 
-# Initialiser la console Rich
 console = Console()
 
-# Charger les variables d'environnement depuis le fichier .env
 load_dotenv()
 
-# Récupérer les informations d'API Azure OpenAI depuis les variables d'environnement
 azure_openai_api_key = os.getenv("AZURE_OPENAI_API_KEY")
 azure_openai_endpoint = os.getenv("AZURE_OPENAI_ENDPOINT")
 azure_openai_deployment_name = os.getenv("AZURE_OPENAI_DEPLOYMENT_NAME")
 azure_openai_api_version = os.getenv("AZURE_OPENAI_API_VERSION")
 
-# Configuration du modèle Azure OpenAI (AzureChatOpenAI)
 llm = AzureChatOpenAI(
     azure_endpoint=azure_openai_endpoint,
     azure_deployment=azure_openai_deployment_name,
@@ -77,7 +73,7 @@ index = create_vector_index(book_summaries, embedding_model)
 def get_book_info(book_title):
     book_info = df_books[df_books['Title'].str.contains(book_title, case=False, na=False)]
     if not book_info.empty:
-        return book_info.iloc[0].to_dict()  # Retourner les attributs du premier livre correspondant
+        return book_info.iloc[0].to_dict()
     else:
         return "Book not found."
 
